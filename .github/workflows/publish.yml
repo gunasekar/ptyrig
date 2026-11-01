@@ -1,0 +1,106 @@
+name: Publish Marketplace preview
+
+# Publication is deliberately manual and requires a protected marketplace
+# environment plus a Marketplace Trusted Publishing policy for this file.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Reviewed version tag (for example v0.1.0)
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: marketplace-publish
+  cancel-in-progress: false
+
+jobs:
+  source:
+    runs-on: ubuntu-26.04
+    outputs:
+      commit: ${{ steps.source.outputs.commit }}
+    steps:
+      - name: Require explicit repository-level publishing setup
+        env:
+          ENABLED: ${{ vars.MARKETPLACE_PUBLISHING_ENABLED }}
+        run: test "$ENABLED" = true
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          check-latest: true
+      - id: source
+        name: Resolve a version tag on main
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          COMMIT=$(git rev-parse --verify "refs/tags/${RELEASE_TAG}^{commit}")
+          git merge-base --is-ancestor "$COMMIT" origin/main
+          [[ "$COMMIT" == "$GITHUB_SHA" ]] # provenance must identify the actual checked-out source
+          git checkout --detach "$COMMIT"
+          node scripts/release-check.js
+          echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: source
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.source.outputs.commit }}
+
+  publish:
+    needs: [source, build]
+    runs-on: ubuntu-26.04
+    environment: marketplace
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.source.outputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+          check-latest: true
+          cache: npm
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.x'
+          check-latest: true
+      # Publishing a prebuilt VSIX needs the packaging CLI, not extension install
+      # scripts or native binaries. No extension code is executed in this job.
+      - run: npm install --global npm@12.2.1
+      - run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ptyrig-release-darwin-arm64
+          path: release
+          digest-mismatch: error
+      - name: Verify the exact artifact to publish
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        shell: bash
+        run: |
+          node scripts/release-check.js
+          VERSION=$(node -p "require('./package.json').version")
+          python3 scripts/verify-package.py "release/ptyrig-${VERSION}-darwin-arm64.vsix" --target darwin-arm64
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: release/*.vsix
+      - name: Publish the verified VSIX using Marketplace OIDC
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          node node_modules/@vscode/vsce/vsce publish --packagePath "release/ptyrig-${VERSION}-darwin-arm64.vsix" --oidc

@@ -1,0 +1,123 @@
+{
+  "name": "ptyrig",
+  "displayName": "PTYrig",
+  "description": "Give your CLI/TUI tool a dedicated place in VS Code with a few settings.",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.95.3"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "main": "./src/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "ptyrig.toggle",
+        "title": "Hide/Show",
+        "category": "PTYrig",
+        "icon": "$(eye-closed)"
+      },
+      {
+        "command": "ptyrig.new",
+        "title": "New Session",
+        "category": "PTYrig",
+        "icon": "$(add)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "ptyrig.new",
+          "group": "navigation@1",
+          "when": "activeWebviewPanelId == ptyrig.session && config.ptyrig.multipleSessions"
+        },
+        {
+          "command": "ptyrig.toggle",
+          "group": "navigation@2",
+          "when": "activeWebviewPanelId == ptyrig.session"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "ptyrig.toggle",
+        "key": "ctrl+\\",
+        "mac": "ctrl+\\"
+      },
+      {
+        "command": "ptyrig.new",
+        "key": "ctrl+shift+\\",
+        "mac": "ctrl+shift+\\"
+      }
+    ],
+    "configuration": {
+      "title": "PTYrig",
+      "properties": {
+        "ptyrig.command": {
+          "type": "string",
+          "default": "",
+          "description": "Foreground terminal application to run, including arguments.",
+          "scope": "resource",
+          "restricted": true
+        },
+        "ptyrig.name": {
+          "type": "string",
+          "default": "PTYrig",
+          "description": "Session title template. Use ($CMD) for the launched command, e.g. Agent ($CMD). Parentheses are preserved; multiple-session titles have a numeric prefix.",
+          "scope": "resource"
+        },
+        "ptyrig.multipleSessions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allow New Session to start additional processes. When disabled, it reveals existing sessions instead. Existing processes are preserved; new sessions use an unnumbered title.",
+          "scope": "resource"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "node scripts/package.js",
+    "postinstall": "node scripts/prepare-pty.js",
+    "test:vscode": "node scripts/test-vscode.js",
+    "test:vscode:ci": "node scripts/test-ci.js",
+    "release:check": "node scripts/release-check.js"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "0.11.0",
+    "@xterm/addon-serialize": "0.14.0",
+    "@xterm/headless": "6.0.0",
+    "@xterm/xterm": "6.0.0",
+    "node-pty": "1.1.0"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.1.0"
+  },
+  "allowScripts": {
+    "node-pty@1.1.0": true,
+    "@vscode/vsce-sign@2.1.0": true
+  },
+  "icon": "icons/ptyrig.png",
+  "preview": true,
+  "publisher": "ptyrig",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gunasekar/ptyrig.git"
+  },
+  "homepage": "https://github.com/gunasekar/ptyrig#readme",
+  "bugs": {
+    "url": "https://github.com/gunasekar/ptyrig/issues"
+  }
+}

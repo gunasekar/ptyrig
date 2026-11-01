@@ -1,0 +1,6 @@
+# actionlint 1.7.12 predates this GitHub-hosted GA label. Its additional-label
+# configuration is named self-hosted-runner but also extends the hosted allowlist.
+# Source: https://github.com/actions/runner-images/blob/main/README.md
+self-hosted-runner:
+  labels:
+    - ubuntu-26.04

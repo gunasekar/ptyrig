@@ -1,0 +1,11 @@
+node_modules/
+*.vsix
+.DS_Store
+*.vsix.sha256
+.vscode-test/
+dist/
+*.sbom.json
+.env
+.env.*
+!.env.example
+.npmrc
