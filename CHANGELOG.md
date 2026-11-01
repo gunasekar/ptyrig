@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 Preview (2026-11-02)
+
+- Outline the Marketplace listing icon so it stays visible on dark themes.
+- Shorten the README and move reference material into USAGE, DEVELOPMENT, and ARCHITECTURE guides.
+
 ## 0.1.0 Preview (2026-11-02)
 
 Initial release for macOS Apple Silicon.
