@@ -9,7 +9,7 @@ installation.
 ```sh
 npm ci
 npm run package
-code --install-extension ptyrig-0.1.0-darwin-arm64.vsix
+code --install-extension ptyrig-0.1.1-darwin-arm64.vsix
 ```
 
 Builds target the host OS and architecture. The public preview supports macOS
@@ -40,6 +40,6 @@ npm run package
 
 The VSIX targets the build host OS/architecture and includes a SHA-256 checksum
 and CycloneDX runtime dependency inventory. For example, a macOS Apple Silicon
-build produces `ptyrig-0.1.0-darwin-arm64.vsix`.
+build produces `ptyrig-0.1.1-darwin-arm64.vsix`.
 
 See [Contributing](../CONTRIBUTING.md) for the full check list and contribution guidance.

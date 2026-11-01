@@ -1,4 +1,4 @@
-# v0.1.0 preparation
+# Release preparation
 
 ## Current status
 
@@ -7,6 +7,10 @@ v0.1.0 Preview is published for macOS Apple Silicon. The tagged
 passed all three build lanes, verified the VSIX, generated provenance and published
 through Marketplace OIDC after deployment approval. The downloaded Marketplace
 VSIX matches the tested artifact's SHA-256 checksum.
+
+v0.1.1 is the next Preview cut: Marketplace listing-icon outline for dark themes,
+plus the shorter README and reference guides. Publish with tag `v0.1.1` once this
+version is on main.
 
 The source is public at `gunasekar/ptyrig`, with private vulnerability reporting,
 main branch protection and protected version tags. The Marketplace publisher is
@@ -58,7 +62,7 @@ npm run test:vscode
 PTYRIG_VSCODE_VERSION=1.95.3 npm run test:vscode:ci
 npm run release:check
 npm run package
-python3 scripts/verify-package.py ptyrig-0.1.0-darwin-arm64.vsix --target darwin-arm64
+python3 scripts/verify-package.py ptyrig-0.1.1-darwin-arm64.vsix --target darwin-arm64
 ```
 
 Packaging targets the build host and writes the VSIX, its SHA-256 file, and a
@@ -73,7 +77,7 @@ After all setup and checks pass, create the reviewed version tag and push it.
 Publishing is manual; a tag push alone does not publish:
 
 ```sh
-gh workflow run publish.yml --ref v0.1.0 -f tag=v0.1.0
+gh workflow run publish.yml --ref v0.1.1 -f tag=v0.1.1
 ```
 
 The workflow verifies the tag/version, requires that its dispatch source commit
