@@ -1,5 +1,8 @@
 # Contributing
 
+See [Development](docs/DEVELOPMENT.md) for local setup and builds, and
+[Architecture](docs/ARCHITECTURE.md) for the process and renderer design.
+
 Use Node.js 22 or newer and Python 3.9 or newer for package verification. Install
 with `npm ci` so the committed dependency versions and integrity hashes are used.
 Prefer Node.js 26 LTS and a maintained Python 3 release. CI uses npm 12.2.1;

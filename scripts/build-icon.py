@@ -1,4 +1,4 @@
-"""Generate PTYrig's stacked-terminal SVGs and PNG using the standard library."""
+"""Generate tab SVGs and a listing PNG with a contrasting outline."""
 import math
 from pathlib import Path
 import struct
@@ -38,13 +38,28 @@ def pixel(x, y):
     return black if frame(x, y, 67, 34, 226, 173, 20, 13) else clear
 
 
+coverage = []
+for y in range(size):
+    for x in range(size):
+        samples = [pixel(x+(sx+.5)/scale, y+(sy+.5)/scale) for sy in range(scale) for sx in range(scale)]
+        coverage.append(sum(c[3] for c in samples) / (255 * scale * scale))
+
+# The Marketplace/listing icon is a single PNG, unlike the theme-aware tab SVGs.
+# Outline the black strokes in white so they work on dark and light backgrounds.
+# Keep the pane interiors and the rest of the canvas transparent.
+radius = 4
+neighbors = [(dx, dy) for dy in range(-radius, radius+1)
+             for dx in range(-radius, radius+1) if dx*dx + dy*dy <= radius*radius]
 raw = bytearray()
 for y in range(size):
     raw.append(0)
     for x in range(size):
-        samples = [pixel(x+(sx+.5)/scale, y+(sy+.5)/scale) for sy in range(scale) for sx in range(scale)]
-        alpha = sum(c[3] for c in samples)
-        raw.extend([round(sum(c[k]*c[3] for c in samples)/alpha) if alpha else 0 for k in range(3)] + [round(alpha/(scale*scale))])
+        black_alpha = coverage[y*size+x]
+        white_alpha = max(coverage[(y+dy)*size+x+dx] for dx, dy in neighbors
+                          if 0 <= x+dx < size and 0 <= y+dy < size)
+        alpha = black_alpha + white_alpha * (1-black_alpha)
+        value = round(255 * white_alpha * (1-black_alpha) / alpha) if alpha else 0
+        raw.extend([value, value, value, round(255 * alpha)])
 
 
 def chunk(name, data):
