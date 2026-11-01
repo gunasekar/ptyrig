@@ -41,7 +41,7 @@ patching or automatic closure of unrelated editors is used.
 
 Source: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/browser/parts/editor/multiEditorTabsControl.ts
 
-## Release preparation follow-up
+## Release preparation follow-up (before publication)
 
 - Reproduced and fixed scrolling-margin divergence after screen restoration. Added
   a version-pinned xterm state supplement and round-trip tests for future output,
@@ -80,7 +80,15 @@ Source: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/browser/p
   Removed the forced tab-move commands to avoid visible shuffling. VS Code's
   insertion preference still applies; no editor settings are changed.
 
-## Remaining release work
+## Publication follow-up
+
+v0.1.0 Preview passed the minimum/current macOS and Linux hosted checks and was
+published through OIDC after deployment approval. The Marketplace download matches
+the tested VSIX checksum. GitHub build provenance verification also passed. The
+repository, publisher policy, protected refs and deployment review gate are now
+configured. See RELEASE.md for the release workflow and distribution details.
+
+## Remaining work
 
 - Windows/Linux/Remote SSH/WSL/container native process and packaging validation.
   Current local validation is macOS arm64. POSIX group cleanup does not stop a
@@ -90,9 +98,6 @@ Source: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/browser/p
 - npm audit currently reports two moderate development-tool findings through
   vsce/minimatch. Runtime dependency audit is clean. No forced incompatible major
   override is applied. Recheck before release and track upstream mitigation.
-- Hosted build provenance, protected publishing access and canonical publisher
-  ownership still require configuration/verification. The canonical repository,
-  local dependency inventory and private security reporting are in place.
 - Font preferences, clipboard shortcuts, accessibility/IME, arbitrary remapped keys,
   color/pixel queries and sustained-output performance need broader testing. This
   is not a promise of full native VS Code terminal emulation.

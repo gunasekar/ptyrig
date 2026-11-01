@@ -2,14 +2,15 @@
 
 ## Current status
 
-Local testing is complete, and the source is public at `gunasekar/ptyrig`.
-Private vulnerability reporting is enabled. The first hosted CI run passed the
-minimum macOS, current macOS and Linux checks. Changes to the initial commit must
-pass CI again before release.
+v0.1.0 Preview is published for macOS Apple Silicon. The tagged
+[release workflow](https://github.com/gunasekar/ptyrig/actions/runs/41355787130)
+passed all three build lanes, verified the VSIX, generated provenance and published
+through Marketplace OIDC after deployment approval. The downloaded Marketplace
+VSIX matches the tested artifact's SHA-256 checksum.
 
-The Marketplace publisher is `ptyrig`. The maintainer has registered the publisher
-and its trusted publishing policy. The first tagged release workflow will verify
-OIDC access after the `marketplace` deployment is approved.
+The source is public at `gunasekar/ptyrig`, with private vulnerability reporting,
+main branch protection and protected version tags. The Marketplace publisher is
+`ptyrig`; the trusted publishing policy uses the `marketplace` environment.
 The first release is a Preview for macOS Apple Silicon. Linux CI provides extra
 coverage, but Linux is not a published target yet. Before adding Windows, review
 node-pty issue #967 and test native process cleanup.
