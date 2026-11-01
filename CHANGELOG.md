@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 Preview (unreleased)
+## 0.1.0 Preview (2026-11-02)
 
 Initial release for macOS Apple Silicon.
 

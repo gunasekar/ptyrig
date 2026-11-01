@@ -58,8 +58,9 @@ reviewed code. Before public publication we must:
 
 These publication controls must be verified before release. The public repository
 is `gunasekar/ptyrig`, with private vulnerability reporting enabled. The intended
-Marketplace publisher is `ptyrig`; publisher ownership, release protections and
-trusted publishing configuration still need verification.
+Marketplace publisher is `ptyrig`. The maintainer has registered the publisher
+and its trusted publishing policy. The release workflow verifies publishing
+access through OIDC and requires review of the `marketplace` deployment.
 
 ## Reporting
 
@@ -69,6 +70,5 @@ https://github.com/gunasekar/ptyrig/security/advisories/new
 Private vulnerability reporting is enabled for this repository. Do not post
 credentials or exploit details in public issues.
 
-The first supported release will be 0.1.x Preview on macOS Apple Silicon. Only the
-latest published patch in that series receives fixes. No public PTYrig version
-has been released yet.
+The supported release line is 0.1.x Preview on macOS Apple Silicon. Only the
+latest published patch in that series receives fixes.

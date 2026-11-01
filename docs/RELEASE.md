@@ -7,8 +7,9 @@ Private vulnerability reporting is enabled. The first hosted CI run passed the
 minimum macOS, current macOS and Linux checks. Changes to the initial commit must
 pass CI again before release.
 
-The planned Marketplace publisher is `ptyrig`. The publisher account and trusted
-publishing policy still need setup, and no extension has been published yet.
+The Marketplace publisher is `ptyrig`. The maintainer has registered the publisher
+and its trusted publishing policy. The first tagged release workflow will verify
+OIDC access after the `marketplace` deployment is approved.
 The first release is a Preview for macOS Apple Silicon. Linux CI provides extra
 coverage, but Linux is not a published target yet. Before adding Windows, review
 node-pty issue #967 and test native process cleanup.
@@ -23,9 +24,9 @@ still needs the setup below.
 
 ## Setup before publication
 
-1. Register/verify ownership of the new `ptyrig` Marketplace publisher. The public
-   `gunasekar/ptyrig` repository exists; metadata is prepared in package.json.
-   This identity must not be used if the publisher name cannot be registered. Keep Preview.
+1. Confirm the `ptyrig` publisher and trusted publishing policy match the public
+   `gunasekar/ptyrig` repository and `.github/workflows/publish.yml` workflow.
+   The policy environment must be `marketplace`. Keep the Preview label.
 2. Keep main and the release tag on the reviewed source. Private vulnerability
    reporting is enabled, and SECURITY.md links to it. Protect main and release tags; require reviews,
    CODEOWNER review and passing Checks jobs. Require MFA for maintainer accounts.

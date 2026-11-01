@@ -9,8 +9,15 @@ PTYrig works on its own, without a separate session manager.
 
 ## Install
 
-The first release will be a **Preview for macOS Apple Silicon**. It is not on the
-Marketplace yet. To try it locally, build and install the VSIX:
+The first release is a **Preview for macOS Apple Silicon**. Install it from the
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=ptyrig.ptyrig)
+or run:
+
+```sh
+code --install-extension ptyrig.ptyrig
+```
+
+To build and install it from source:
 
 ```sh
 npm ci
