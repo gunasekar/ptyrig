@@ -24,6 +24,8 @@ def verify(artifact, target):
                     raise ValueError('Development/build artifact bundled: ' + relative)
                 if '/@vscode/' in name or relative.endswith('.test.js'):
                     raise ValueError('Development dependency/test bundled: ' + relative)
+                if relative.startswith(('docs/images/', 'node_modules/node-pty/node_modules/node-addon-api/')) or (relative.startswith('node_modules/@xterm/') and relative.endswith('.mjs')):
+                    raise ValueError('Unneeded package file bundled: ' + relative)
                 if '/prebuilds/' in name and '/prebuilds/' + target + '/' not in name:
                     raise ValueError('Other platform prebuild bundled: ' + name)
         packaged = json.loads(archive.read('extension/package.json'))
@@ -38,6 +40,8 @@ def verify(artifact, target):
             for source in (root / folder).rglob('*'):
                 if source.is_file():
                     relative = source.relative_to(root).as_posix()
+                    if relative.startswith('docs/images/'):
+                        continue
                     if archive.read('extension/' + relative) != source.read_bytes():
                         raise ValueError('Packaged bytes differ: ' + relative)
         for source, bundled in [('README.md', 'readme.md'), ('CHANGELOG.md', 'changelog.md'), ('SECURITY.md', 'SECURITY.md'), ('LICENSE', 'LICENSE.txt')]:
