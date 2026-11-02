@@ -36,7 +36,7 @@ class Session extends EventEmitter {
     this.screen = new Terminal({ cols: 100, rows: 30, scrollback: 2000, allowProposedApi: true });
     // xterm handles OSC 0/2 and BEL/ST terminators even without a visible renderer.
     this.screen.onTitleChange(value => {
-      if (this.closed || !this.nameTemplate.includes('($TITLE)')) return;
+      if (this.closed || !this.nameTemplate.includes('$TITLE')) return;
       const title = sessionTitle(this.id, this.nameTemplate, value, this.numbered, displayName);
       if (title !== this.title) { this.title = title; this.emit('title', title); }
     });

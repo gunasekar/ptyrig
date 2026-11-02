@@ -30,6 +30,10 @@ The status bar launcher appears after startup; click it to start or hide/show se
 Custom launchers should send standard OSC 0/2 titles instead of the former
 `ptyrig-command` OSC 777 message. This is a breaking change in 0.3.0.
 
+`$TITLE` is the placeholder; parentheses are optional surrounding text. Use
+`"ptyrig.sessionTitle": "$TITLE"` for just the live title, or
+`"ptyrig.sessionTitle": "Agent ($TITLE)"` to wrap it.
+
 ### Claude Code
 
 ```json

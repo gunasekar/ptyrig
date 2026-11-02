@@ -9,7 +9,11 @@ test('placeholder preserves parentheses and numbering while fixed names remain f
   assert.equal(sessionTitle(1,'My Agent','claude',true),'1: My Agent');
   assert.equal(sessionTitle(1,'Agent ($TITLE)',undefined,true,'Agents'),'1: Agents');
   assert.equal(sessionTitle(1,'($TITLE) + ($TITLE)','claude',true),'1: (claude) + (claude)');
-  assert.equal(sessionTitle(1,'raw $TITLE','claude',true),'1: raw $TITLE');
+  assert.equal(sessionTitle(1,'$TITLE','claude',true),'1: claude');
+  assert.equal(sessionTitle(1,'raw $TITLE','claude',true),'1: raw claude');
+  assert.equal(sessionTitle(1,'[$TITLE] — $TITLE','claude',false),'[claude] — claude');
+  assert.equal(sessionTitle(1,'$TITLE','',false,'Trails'),'Trails');
+  assert.equal(sessionTitle(1,'$TITLE','$& $TITLE',false),'$& $TITLE');
 });
 
 test('live titles allow task text while removing controls and bounding labels',()=>{

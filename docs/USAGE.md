@@ -8,7 +8,7 @@ Set these in VS Code Settings or `settings.json`:
 |---|---|---|
 | `ptyrig.command` | Empty | Shell command to run when starting a session |
 | `ptyrig.name` | `PTYrig` | Display name used in the status bar, launcher tooltip and initial live-title tab |
-| `ptyrig.sessionTitle` | `PTYrig` | Session tab title template; supports live `($TITLE)` |
+| `ptyrig.sessionTitle` | `PTYrig` | Session tab title template; supports live `$TITLE` |
 | `ptyrig.multipleSessions` | `true` | Allow more than one running session |
 
 Upgrading from 0.1.x: move the existing session title in `ptyrig.name` to
@@ -73,9 +73,10 @@ does not provide a fixed sidebar or an Activity Bar icon.
 
 ## Live terminal titles
 
-Use `($TITLE)` in `ptyrig.sessionTitle` to follow the application's terminal title.
-For example, `Agent ($TITLE)` becomes `1: Agent (Fixing login bug)`. Parentheses
-are preserved. Until a nonempty title arrives, the tab shows `ptyrig.name`.
+Use `$TITLE` in `ptyrig.sessionTitle` to follow the application's terminal title.
+For example, `$TITLE` becomes `1: Fixing login bug`. Surrounding text is literal:
+`Agent ($TITLE)` becomes `1: Agent (Fixing login bug)`. Until a nonempty title
+arrives, the tab shows `ptyrig.name`.
 An empty title restores that fallback. Single-session mode omits the number.
 Live titles longer than 32 Unicode code points are shortened with an ellipsis.
 The native tab hover also contains the shortened title; a separate full-title
@@ -90,7 +91,7 @@ printf '\033]2;%s\007' "Fixing login bug"
 Any application writing to the session can update its title. The latest title wins,
 including while hidden; a child exiting does not restore a previous title.
 With tmux, PTYrig receives the title tmux forwards. Titles are display metadata.
-Fixed templates without `($TITLE)` ignore updates. Template changes apply to new
+Fixed templates without `$TITLE` ignore updates. Template changes apply to new
 sessions. `($CMD)` and the custom OSC 777 command-report protocol are no longer supported.
 
 ## Environment identification

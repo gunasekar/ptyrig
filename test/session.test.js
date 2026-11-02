@@ -109,18 +109,21 @@ test('close escalates for a process ignoring hangup and terminates its PTY group
 });
 
 test('standard titles update placeholder tabs using OSC 0/2, including split and empty titles', async () => {
-  const session = new Session(5, 'Agent ($TITLE)', 'sleep 120', process.cwd(), undefined, true, 'Trails');
-  const output = data => new Promise(resolve => session.screen.write(data, resolve));
-  try {
-    assert.equal(session.title,'5: Trails');
-    await output('\x1b]2;Fixing ');
-    await output('login bug\x07');
-    assert.equal(session.title,'5: Agent (Fixing login bug)');
-    await output('\x1b]0;Running tests\x1b\\');
-    assert.equal(session.title,'5: Agent (Running tests)');
-    await output('\x1b]2;\x07');
-    assert.equal(session.title,'5: Trails');
-  } finally { session.close(); }
+  for (const template of ['$TITLE', 'Agent ($TITLE)']) {
+    const session = new Session(5, template, 'sleep 120', process.cwd(), undefined, true, 'Trails');
+    const output = data => new Promise(resolve => session.screen.write(data, resolve));
+    const expected = value => template === '$TITLE' ? `5: ${value}` : `5: Agent (${value})`;
+    try {
+      assert.equal(session.title,'5: Trails');
+      await output('\x1b]2;Fixing ');
+      await output('login bug\x07');
+      assert.equal(session.title,expected('Fixing login bug'));
+      await output('\x1b]0;Running tests\x1b\\');
+      assert.equal(session.title,expected('Running tests'));
+      await output('\x1b]2;\x07');
+      assert.equal(session.title,'5: Trails');
+    } finally { session.close(); }
+  }
   const fixed = new Session(6, 'Fixed', 'sleep 120', process.cwd(),undefined,false);
   try {
     await new Promise(resolve=>fixed.screen.write('\x1b]2;Some title\x07',resolve));
