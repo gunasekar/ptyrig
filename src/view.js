@@ -8,7 +8,7 @@ function createView(context, session, column, onActive, onClose) {
       enableScripts: true,
       localResourceRoots: [root('web'), root('node_modules', '@xterm', 'xterm', 'lib'), root('node_modules', '@xterm', 'xterm', 'css'), root('node_modules', '@xterm', 'addon-fit', 'lib')]
     });
-  panel.iconPath = { light: root('icons', 'ptyrig-light.svg'), dark: root('icons', 'ptyrig-dark.svg') };
+  panel.iconPath = root('icons', 'ptyrig.svg');
   panel.ptyrigFrames = 0;
   let hiding = false;
   let disposed = false;
@@ -76,7 +76,7 @@ function createView(context, session, column, onActive, onClose) {
   panel.webview.html = `<!doctype html><html><head><meta charset="utf-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; style-src ${panel.webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
     <link rel="stylesheet" href="${asset('node_modules', '@xterm', 'xterm', 'css', 'xterm.css')}">
-    <style>html,body,#terminal{height:100%;width:100%;margin:0;overflow:hidden}body{background:var(--vscode-terminal-background,var(--vscode-editor-background))}#terminal{box-sizing:border-box;padding:8px}</style></head>
+    <style>html,body,#terminal{height:100%;width:100%;margin:0;overflow:hidden}body,#terminal .xterm,#terminal .xterm-viewport{background:var(--vscode-terminal-background,var(--vscode-editor-background))}#terminal .xterm{box-sizing:border-box;height:100%;padding:8px}</style></head>
     <body><div id="terminal" role="region" aria-label="Terminal application"></div>
     <script nonce="${nonce}" src="${asset('node_modules', '@xterm', 'xterm', 'lib', 'xterm.js')}"></script>
     <script nonce="${nonce}" src="${asset('node_modules', '@xterm', 'addon-fit', 'lib', 'addon-fit.js')}"></script>

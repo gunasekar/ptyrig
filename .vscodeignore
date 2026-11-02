@@ -11,6 +11,7 @@ node_modules/node-pty/deps/**
 node_modules/node-pty/test/**
 
 scripts/build-icon.py
+scripts/build-status-icon.py
 *.vsix.sha256
 scripts/package.js
 scripts/test-ci.js
@@ -27,3 +28,5 @@ node_modules/node-pty/scripts/**
 .env.*
 .npmrc
 CONTRIBUTING.md
+
+output/**

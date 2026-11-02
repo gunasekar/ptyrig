@@ -2,25 +2,54 @@
   "name": "ptyrig",
   "displayName": "PTYrig",
   "description": "Give your CLI/TUI tool a dedicated place in VS Code with a few settings.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "license": "MIT",
   "engines": {
     "vscode": "^1.95.3"
   },
   "categories": [
-    "Other"
+    "Other",
+    "AI"
+  ],
+  "keywords": [
+    "terminal",
+    "tui",
+    "cli",
+    "pty",
+    "session",
+    "shell",
+    "console",
+    "repl",
+    "agent",
+    "codex",
+    "claude",
+    "lazygit",
+    "multiplexer",
+    "harness"
   ],
   "extensionKind": [
     "workspace"
   ],
   "main": "./src/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false
     }
   },
   "contributes": {
+    "icons": {
+      "ptyrig-logo": {
+        "description": "PTYrig stacked terminal logo",
+        "default": {
+          "fontPath": "./icons/ptyrig.woff",
+          "fontCharacter": "\\E001"
+        }
+      }
+    },
     "commands": [
       {
         "command": "ptyrig.toggle",
@@ -72,6 +101,12 @@
           "restricted": true
         },
         "ptyrig.name": {
+          "type": "string",
+          "default": "PTYrig",
+          "description": "Display name used in the status bar and launcher tooltip. Plain text; session title placeholders do not apply.",
+          "scope": "resource"
+        },
+        "ptyrig.sessionTitle": {
           "type": "string",
           "default": "PTYrig",
           "description": "Session title template. Use ($CMD) for the launched command, e.g. Agent ($CMD). Parentheses are preserved; multiple-session titles have a numeric prefix.",

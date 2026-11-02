@@ -21,50 +21,64 @@ Install the terminal tools you want to use separately.
 
 Add one of these examples to VS Code's `settings.json`. Install the tools first.
 If no command is configured, PTYrig asks you to set one when you first open it.
+The status bar launcher appears after startup; click it to start or hide/show sessions.
+
+**Upgrading from 0.1.x:** move your existing session title from `ptyrig.name` to
+`ptyrig.sessionTitle`. Use `ptyrig.name` for the launcher label. Both default to `PTYrig`.
 
 ### Claude Code
 
 ```json
 {
   "ptyrig.command": "claude",
-  "ptyrig.name": "Claude Code"
+  "ptyrig.name": "Claude Code",
+  "ptyrig.sessionTitle": "Claude Code"
 }
 ```
 
 Each New Session starts an independent Claude Code process. Tabs appear as
 `1: Claude Code`, `2: Claude Code`, and so on.
 
-### Choose an agent with fzf
+### Start an agentic coding session
 
-Choose between **Claude Code**, **Codex**, and **Gemini CLI** each time you start
-a session. This example uses a POSIX shell (macOS/Linux) and requires `fzf` plus
+![PTYrig settings and the Claude, Codex, OpenCode, and Cursor picker in VS Code](https://raw.githubusercontent.com/gunasekar/ptyrig/main/docs/images/agents-launcher.png)
+
+Choose **Claude Code**, **Codex**, **OpenCode**, or **Cursor** to start a coding
+session. This example uses a POSIX shell (macOS/Linux) and requires `fzf` plus
 the agent commands you intend to select:
 
 ```json
 {
-  "ptyrig.command": "agent=$(printf '%s\\n' claude codex gemini | fzf --prompt='Agent > ') && [ -n \"$agent\" ] && printf '\\033]777;ptyrig-command;%s\\007' \"$agent\" && exec \"$agent\"",
-  "ptyrig.name": "Agent ($CMD)"
+  "ptyrig.command": "choice=$(printf '%s\\n' Claude Codex OpenCode Cursor | fzf --layout=reverse --border --padding=1 --no-sort --prompt='Choose an agent > ') && case \"$choice\" in Claude) agent=claude;; Codex) agent=codex;; OpenCode) agent=opencode;; Cursor) agent=cursor-agent;; *) exit 0;; esac && printf '\\033]777;ptyrig-command;%s\\007' \"$agent\" && exec \"$agent\"",
+  "ptyrig.name": "Agents",
+  "ptyrig.sessionTitle": "Agent ($CMD)"
 }
 ```
 
-Select `claude`, `codex`, or `gemini` and press Enter to launch it. Escape cancels
-and closes the session. The launcher reports its selection before starting it,
-so tabs become `1: Agent (claude)`, `2: Agent (codex)`, and so on.
+Select Claude, Codex, OpenCode, or Cursor and press Enter to start coding. Escape
+cancels and closes the session. Cursor uses its `cursor-agent` CLI. The launcher reports
+its selection before starting it, so tabs become `1: Agent (claude)`,
+`2: Agent (codex)`, and so on.
 
-### Lazygit
+### Review Git changes with Lazygit
 
-Keep one Git interface running and hide/show it as needed:
+Review diffs, stage hunks, and manage commits beside your code. Install `lazygit`
+and open a Git repository, then configure:
 
 ```json
 {
   "ptyrig.command": "lazygit",
-  "ptyrig.name": "Lazygit",
+  "ptyrig.name": "LazyGit",
+  "ptyrig.sessionTitle": "LazyGit",
   "ptyrig.multipleSessions": false
 }
 ```
 
-New Session reveals the existing Lazygit session instead of starting another.
-Its title is simply `Lazygit`.
+Click **LazyGit** in the status bar to open Lazygit in a **LazyGit** tab.
+Hide/show preserves the running session. With `multipleSessions` disabled,
+New Session reveals it instead of starting another process.
+
+![PTYrig configured for Git review, with a real Lazygit diff beside the settings](https://raw.githubusercontent.com/gunasekar/ptyrig/main/docs/images/git-review.png)
 
 ## Shortcuts
 

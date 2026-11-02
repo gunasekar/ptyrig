@@ -7,8 +7,13 @@ Set these in VS Code Settings or `settings.json`:
 | Setting | Default | Purpose |
 |---|---|---|
 | `ptyrig.command` | Empty | Shell command to run when starting a session |
-| `ptyrig.name` | `PTYrig` | Session title; supports `($CMD)` |
+| `ptyrig.name` | `PTYrig` | Display name used in the status bar and launcher tooltip |
+| `ptyrig.sessionTitle` | `PTYrig` | Session tab title template; supports `($CMD)` |
 | `ptyrig.multipleSessions` | `true` | Allow more than one running session |
+
+Upgrading from 0.1.x: move the existing session title in `ptyrig.name` to
+`ptyrig.sessionTitle`, including fixed titles without placeholders. Set
+`ptyrig.name` to a plain display name. Both settings default to `PTYrig`.
 
 See the [README examples](../README.md#configure) for Claude Code, an fzf agent
 picker and Lazygit.
@@ -16,13 +21,15 @@ picker and Lazygit.
 ## Sessions and shortcuts
 
 Multiple sessions are enabled by default. Session numbers remain stable and are
-not reused until the extension restarts. Name and command changes apply to new
-sessions. Settings and Command Palette commands always use the PTYrig name.
+not reused until the extension restarts. Session title and command changes apply
+to new sessions. Display name changes update the launcher immediately. Settings
+and Command Palette commands always use the PTYrig name.
 
 | Shortcut | Command | Behavior |
 |---|---|---|
 | Ctrl+backslash | PTYrig: Hide/Show | Start the first session or hide/show all sessions |
 | Ctrl+Shift+backslash | PTYrig: New Session | Start another independent session |
+| Status bar (right) | PTYrig: Hide/Show | Same as Hide/Show; click the configured display name in the status bar |
 
 Control is used on macOS too. These bindings override VS Code defaults and can be
 remapped in Keyboard Shortcuts. VS Code handles the shortcuts, and PTYrig keeps
@@ -61,7 +68,7 @@ does not provide a fixed sidebar or an Activity Bar icon.
 
 ## Command names in titles
 
-Use `($CMD)` in `ptyrig.name` to include the command name, with parentheses:
+Use `($CMD)` in `ptyrig.sessionTitle` to include the command name, with parentheses:
 
 | Name template | Running command | Session title |
 |---|---|---|
@@ -84,8 +91,8 @@ exec "$agent"
 
 This is display metadata from the running application, not verified process
 identity. Ordinary application window-title changes do not overwrite the template.
-Fixed names without `($CMD)` ignore command reports. Updating the name preference
-applies to new sessions; existing sessions keep their original template.
+Fixed names without `($CMD)` ignore command reports. Updating the session title
+preference applies to new sessions; existing sessions keep their original template.
 
 ## Single-session applications
 
