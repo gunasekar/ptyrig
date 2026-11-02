@@ -7,13 +7,18 @@ Set these in VS Code Settings or `settings.json`:
 | Setting | Default | Purpose |
 |---|---|---|
 | `ptyrig.command` | Empty | Shell command to run when starting a session |
-| `ptyrig.name` | `PTYrig` | Display name used in the status bar and launcher tooltip |
-| `ptyrig.sessionTitle` | `PTYrig` | Session tab title template; supports `($CMD)` |
+| `ptyrig.name` | `PTYrig` | Display name used in the status bar, launcher tooltip and initial live-title tab |
+| `ptyrig.sessionTitle` | `PTYrig` | Session tab title template; supports live `($TITLE)` |
 | `ptyrig.multipleSessions` | `true` | Allow more than one running session |
 
 Upgrading from 0.1.x: move the existing session title in `ptyrig.name` to
 `ptyrig.sessionTitle`, including fixed titles without placeholders. Set
 `ptyrig.name` to a plain display name. Both settings default to `PTYrig`.
+
+Upgrading from 0.2.0 to 0.3.0: replace `($CMD)` with `($TITLE)` in
+`ptyrig.sessionTitle`. Replace custom OSC 777 command reports with OSC 0/2 title
+sequences. Old placeholders are treated as literal text; no automatic migration
+is performed.
 
 See the [README examples](../README.md#configure) for Claude Code, an fzf agent
 picker and Lazygit.
@@ -66,33 +71,34 @@ PTYrig never creates a native VS Code terminal or moves anything through the
 bottom panel. Editor tabs can expand if other editor groups are closed; PTYrig
 does not provide a fixed sidebar or an Activity Bar icon.
 
-## Command names in titles
+## Live terminal titles
 
-Use `($CMD)` in `ptyrig.sessionTitle` to include the command name, with parentheses:
+Use `($TITLE)` in `ptyrig.sessionTitle` to follow the application's terminal title.
+For example, `Agent ($TITLE)` becomes `1: Agent (Fixing login bug)`. Parentheses
+are preserved. Until a nonempty title arrives, the tab shows `ptyrig.name`.
+An empty title restores that fallback. Single-session mode omits the number.
+Live titles longer than 32 Unicode code points are shortened with an ellipsis.
+The native tab hover also contains the shortened title; a separate full-title
+hover is not currently available. Fixed templates keep their configured name.
 
-| Name template | Running command | Session title |
-|---|---|---|
-| `($CMD)` | `claude` | `1: (claude)` |
-| `Agent ($CMD)` | `codex` | `1: Agent (codex)` |
-| `My Agent` | `codex` | `1: My Agent` |
-
-Single-session mode omits the numeric prefix, for example `Agent (claude)`.
-Simple commands use the executable's basename, without its arguments. Compound
-shell launchers initially show `(…)` until they report a selection, as in the
-fzf example in the README. PTYrig does not execute a command or inspect unrelated
-processes to guess a name.
-
-Custom POSIX launchers can report a selected command with:
+PTYrig accepts standard OSC 0 and OSC 2 title updates, terminated by BEL or ST:
 
 ```sh
-printf '\033]777;ptyrig-command;%s\007' "$agent"
-exec "$agent"
+printf '\033]2;%s\007' "Fixing login bug"
 ```
 
-This is display metadata from the running application, not verified process
-identity. Ordinary application window-title changes do not overwrite the template.
-Fixed names without `($CMD)` ignore command reports. Updating the session title
-preference applies to new sessions; existing sessions keep their original template.
+Any application writing to the session can update its title. The latest title wins,
+including while hidden; a child exiting does not restore a previous title.
+With tmux, PTYrig receives the title tmux forwards. Titles are display metadata.
+Fixed templates without `($TITLE)` ignore updates. Template changes apply to new
+sessions. `($CMD)` and the custom OSC 777 command-report protocol are no longer supported.
+
+## Environment identification
+
+PTYrig sets `PTYRIG_SESSION=1` in the environment of every launched process.
+Scripts may use it to detect a PTYrig session. It is an informational marker,
+not an authentication signal, and can be inherited by child processes or a
+long-lived tmux server. Standard terminal title updates do not require it.
 
 ## Single-session applications
 

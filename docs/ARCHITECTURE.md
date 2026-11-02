@@ -1,7 +1,7 @@
 # Architecture
 
 - `src/session.js`: PTY lifecycle, input/resize, headless terminal and bounded scrollback.
-- `src/titles.js`: safe command labels and configurable title templates.
+- `src/titles.js`: sanitized live terminal titles, initial display names and title templates.
 - `src/extension.js`: session registry, commands and view placement.
 - `src/view.js`: webview lifecycle, bounded transport, resource policy and validated messages.
 - `web/terminal.js`: xterm.js renderer, theme integration and keyboard input.
@@ -25,7 +25,17 @@ workspace folder (or the first workspace folder, then home) as working directory
 Child processes receive `TERM_PROGRAM=vscode`, the running VS Code version,
 `TERM=xterm-256color` and `COLORTERM=truecolor`. Inherited outer tmux/editor
 identifiers are removed so applications detect this independent editor terminal.
+`PTYRIG_SESSION=1` identifies the PTYrig terminal to optional integrations. It
+is informational and does not gate terminal title handling.
 This does not provide native VS Code shell integration.
+
+The headless terminal emits title changes for standard OSC 0/2 sequences. Sessions
+with `($TITLE)` templates format those changes and notify their own editor panel,
+including while hidden. Empty titles use the display name captured at creation;
+fixed templates ignore updates. Live title values are sanitized and shortened to
+32 Unicode code points, including an ellipsis, before insertion. Native tab hovers
+therefore also show the shortened text. PTYrig does not parse executable names or
+implement the former custom OSC 777 command-report protocol.
 
 Workspace Trust is required. The workspace extension host owns processes, so Remote
 SSH/WSL/container processes run remotely; those environments still need validation.

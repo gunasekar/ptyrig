@@ -26,6 +26,10 @@ The status bar launcher appears after startup; click it to start or hide/show se
 **Upgrading from 0.1.x:** move your existing session title from `ptyrig.name` to
 `ptyrig.sessionTitle`. Use `ptyrig.name` for the launcher label. Both default to `PTYrig`.
 
+**Upgrading from 0.2.0:** replace `($CMD)` with `($TITLE)` in your session title.
+Custom launchers should send standard OSC 0/2 titles instead of the former
+`ptyrig-command` OSC 777 message. This is a breaking change in 0.3.0.
+
 ### Claude Code
 
 ```json
@@ -49,16 +53,17 @@ the agent commands you intend to select:
 
 ```json
 {
-  "ptyrig.command": "choice=$(printf '%s\\n' Claude Codex OpenCode Cursor | fzf --layout=reverse --border --padding=1 --no-sort --prompt='Choose an agent > ') && case \"$choice\" in Claude) agent=claude;; Codex) agent=codex;; OpenCode) agent=opencode;; Cursor) agent=cursor-agent;; *) exit 0;; esac && printf '\\033]777;ptyrig-command;%s\\007' \"$agent\" && exec \"$agent\"",
+  "ptyrig.command": "choice=$(printf '%s\\n' Claude Codex OpenCode Cursor | fzf --layout=reverse --border --padding=1 --no-sort --prompt='Choose an agent > ') && case \"$choice\" in Claude) agent=claude;; Codex) agent=codex;; OpenCode) agent=opencode;; Cursor) agent=cursor-agent;; *) exit 0;; esac && printf '\\033]2;%s\\007' \"$agent\" && exec \"$agent\"",
   "ptyrig.name": "Agents",
-  "ptyrig.sessionTitle": "Agent ($CMD)"
+  "ptyrig.sessionTitle": "Agent ($TITLE)"
 }
 ```
 
 Select Claude, Codex, OpenCode, or Cursor and press Enter to start coding. Escape
 cancels and closes the session. Cursor uses its `cursor-agent` CLI. The launcher reports
-its selection before starting it, so tabs become `1: Agent (claude)`,
-`2: Agent (codex)`, and so on.
+its selection as a standard terminal title before starting it, so tabs become `1: Agent (claude)`,
+`2: Agent (codex)`, and so on. Before selection, the tab shows `Agents`.
+The launched application can subsequently publish a different title.
 
 ### Review Git changes with Lazygit
 
@@ -79,6 +84,12 @@ Hide/show preserves the running session. With `multipleSessions` disabled,
 New Session reveals it instead of starting another process.
 
 ![PTYrig configured for Git review, with a real Lazygit diff beside the settings](https://raw.githubusercontent.com/gunasekar/ptyrig/main/docs/images/git-review.png)
+
+### Integrate with Trails
+
+Trails/tmux publishes standard terminal titles. Set `ptyrig.command` to `trails`
+and `ptyrig.sessionTitle` to `Trails ($TITLE)` to follow them. Applications can
+update the title at any time using OSC 0 or OSC 2; the latest title wins.
 
 ## Shortcuts
 

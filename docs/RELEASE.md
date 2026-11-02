@@ -2,17 +2,15 @@
 
 ## Current status
 
-v0.1.0 Preview is published for macOS Apple Silicon. The tagged
-[release workflow](https://github.com/gunasekar/ptyrig/actions/runs/41355787130)
-passed all three build lanes, verified the VSIX, generated provenance and published
-through Marketplace OIDC after deployment approval. The downloaded Marketplace
-VSIX matches the tested artifact's SHA-256 checksum.
+v0.2.0 Preview is published for macOS Apple Silicon. Its
+[release workflow](https://github.com/gunasekar/ptyrig/actions/runs/41415660479)
+passed the build and verification lanes and published through Marketplace OIDC.
+The downloaded Marketplace VSIX matched the tested artifact's SHA-256 checksum.
 
-v0.2.0 is the next Preview cut: a startup status bar launcher, separate display
-name and session title settings, an orange logo, and corrected terminal sizing.
-Existing configurations must move their session title from `ptyrig.name` to
-`ptyrig.sessionTitle`; `ptyrig.name` now labels the launcher. Publish with tag
-`v0.2.0` once the reviewed version is on main.
+v0.3.0 Preview is prepared locally with standard terminal title support. The
+breaking migrations are `($CMD)` → `($TITLE)` and custom OSC 777 → standard OSC
+0/2. See CHANGELOG.md and USAGE.md. After review and merge, publish the tagged
+`v0.3.0` artifact using the commands below; this version has not been published.
 
 The source is public at `gunasekar/ptyrig`, with private vulnerability reporting,
 main branch protection and protected version tags. The Marketplace publisher is
@@ -26,8 +24,8 @@ node-pty issue #967 and test native process cleanup.
 The initial commit is `feat: introduce PTYrig terminal application host`. It includes
 the implementation, icons, settings, tests, documentation, lockfile and workflows.
 Dependencies, downloaded VS Code builds, VSIX files, checksums, generated SBOMs and
-local profile data stay out of Git. Local verification is complete; publication
-still needs the setup below.
+local profile data stay out of Git. The setup below records the publication prerequisites and is also useful when
+recreating the release environment.
 
 ## Setup before publication
 
@@ -64,7 +62,7 @@ npm run test:vscode
 PTYRIG_VSCODE_VERSION=1.95.3 npm run test:vscode:ci
 npm run release:check
 npm run package
-python3 scripts/verify-package.py ptyrig-0.2.0-darwin-arm64.vsix --target darwin-arm64
+python3 scripts/verify-package.py ptyrig-0.3.0-darwin-arm64.vsix --target darwin-arm64
 ```
 
 Packaging targets the build host and writes the VSIX, its SHA-256 file, and a
@@ -79,7 +77,7 @@ After all setup and checks pass, create the reviewed version tag and push it.
 Publishing is manual; a tag push alone does not publish:
 
 ```sh
-gh workflow run publish.yml --ref v0.2.0 -f tag=v0.2.0
+gh workflow run publish.yml --ref v0.3.0 -f tag=v0.3.0
 ```
 
 The workflow verifies the tag/version, requires that its dispatch source commit
