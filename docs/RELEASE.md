@@ -7,17 +7,14 @@ v0.3.0 Preview is published for macOS Apple Silicon. Its
 passed the build and verification lanes and published through Marketplace OIDC.
 The Marketplace VSIX matched the tested artifact after HTTP gzip decoding.
 
-The commands below target v0.3.1 Preview, a compatible fix that recognizes `$TITLE`
-directly and preserves literal dollar text in application titles. Existing
-`($TITLE)` templates retain their parentheses. See CHANGELOG.md and USAGE.md.
+The commands below target v0.3.2 Preview, which reduces the packaged extension size.
 Check the [GitHub releases](https://github.com/gunasekar/ptyrig/releases) and the
 [Marketplace listing](https://marketplace.visualstudio.com/items?itemName=ptyrig.ptyrig)
 for publication status.
 
-The source is public at `gunasekar/ptyrig`, with private vulnerability reporting,
-main branch protection and protected version tags. The Marketplace publisher is
-`ptyrig`; the trusted publishing policy uses the `marketplace` environment.
-The first release is a Preview for macOS Apple Silicon. Linux CI provides extra
+The source is public at `gunasekar/ptyrig`, with protected version tags. The
+Marketplace publisher is `ptyrig`; trusted publishing uses the `marketplace`
+environment. The published target is macOS Apple Silicon. Linux CI provides extra
 coverage, but Linux is not a published target yet. Before adding Windows, review
 node-pty issue #967 and test native process cleanup.
 
@@ -64,7 +61,7 @@ npm run test:vscode
 PTYRIG_VSCODE_VERSION=1.95.3 npm run test:vscode:ci
 npm run release:check
 npm run package
-python3 scripts/verify-package.py ptyrig-0.3.1-darwin-arm64.vsix --target darwin-arm64
+python3 scripts/verify-package.py ptyrig-0.3.2-darwin-arm64.vsix --target darwin-arm64
 ```
 
 Packaging targets the build host and writes the VSIX, its SHA-256 file, and a
@@ -79,7 +76,7 @@ After all setup and checks pass, create the reviewed version tag and push it.
 Publishing is manual; a tag push alone does not publish:
 
 ```sh
-gh workflow run publish.yml --ref v0.3.1 -f tag=v0.3.1
+gh workflow run publish.yml --ref v0.3.2 -f tag=v0.3.2
 ```
 
 The workflow verifies the tag/version, requires that its dispatch source commit

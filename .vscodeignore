@@ -30,3 +30,6 @@ node_modules/node-pty/scripts/**
 CONTRIBUTING.md
 
 output/**
+docs/images/**
+node_modules/@xterm/**/*.mjs
+node_modules/node-pty/node_modules/node-addon-api/**

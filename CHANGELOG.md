@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2 Preview (2026-11-03)
+
+- Reduce the extension package size by excluding unused screenshots, module variants, and native build files.
+
 ## 0.3.1 Preview (2026-11-03)
 
 - Fix live session titles to recognize `$TITLE` directly. Existing `($TITLE)` templates retain their literal parentheses.
