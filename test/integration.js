@@ -81,14 +81,14 @@ exports.run = async () => {
     assert.notEqual(api.getSessions()[0].pid,single.pid);
     await vscode.window.tabGroups.close(vscode.window.tabGroups.all.flatMap(g=>g.tabs).filter(t=>t.input instanceof vscode.TabInputWebview));
     await until(()=>api.getSessions().length===0);
-    await config.update('sessionTitle','Agent ($TITLE)',vscode.ConfigurationTarget.Workspace);
+    await config.update('sessionTitle','Agent $TITLE',vscode.ConfigurationTarget.Workspace);
     await config.update('command',"printf '\\033]2;codex\\007'; sleep 1; printf '\\033]2;claude\\007'; sleep 120",vscode.ConfigurationTarget.Workspace);
     await vscode.commands.executeCommand('ptyrig.new');
-    await until(()=>api.getSessions()[0]?.title==='Agent (codex)');
+    await until(()=>api.getSessions()[0]?.title==='Agent codex');
     await vscode.commands.executeCommand('ptyrig.toggle');
-    await until(()=>api.getSessions()[0]?.title==='Agent (claude)');
+    await until(()=>api.getSessions()[0]?.title==='Agent claude');
     await vscode.commands.executeCommand('ptyrig.toggle');
-    await until(()=>vscode.window.tabGroups.all.some(g=>g.tabs.some(t=>t.label==='Agent (claude)')));
+    await until(()=>vscode.window.tabGroups.all.some(g=>g.tabs.some(t=>t.label==='Agent claude')));
     await vscode.window.tabGroups.close(vscode.window.tabGroups.all.flatMap(g=>g.tabs).filter(t=>t.input instanceof vscode.TabInputWebview));
     await until(()=>api.getSessions().length===0);
     await config.update('command','exit 7',vscode.ConfigurationTarget.Workspace);

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 Preview (2026-11-03)
+
+- Fix live session titles to recognize `$TITLE` directly. Existing `($TITLE)` templates retain their literal parentheses.
+- Preserve literal dollar sequences in application titles during substitution.
+
 ## 0.3.0 Preview (2026-11-03)
 
 - Replace `($CMD)` and custom OSC 777 command reports with live `($TITLE)` substitution from standard OSC 0/2 terminal titles. **Migration:** update title templates and launcher escape sequences; old placeholders remain literal text.

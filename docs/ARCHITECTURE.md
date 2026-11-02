@@ -30,7 +30,7 @@ is informational and does not gate terminal title handling.
 This does not provide native VS Code shell integration.
 
 The headless terminal emits title changes for standard OSC 0/2 sequences. Sessions
-with `($TITLE)` templates format those changes and notify their own editor panel,
+with `$TITLE` templates format those changes and notify their own editor panel,
 including while hidden. Empty titles use the display name captured at creation;
 fixed templates ignore updates. Live title values are sanitized and shortened to
 32 Unicode code points, including an ellipsis, before insertion. Native tab hovers

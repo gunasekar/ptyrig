@@ -2,16 +2,15 @@
 
 ## Release target
 
-v0.2.0 Preview is published for macOS Apple Silicon. Its
-[release workflow](https://github.com/gunasekar/ptyrig/actions/runs/41415660479)
+v0.3.0 Preview is published for macOS Apple Silicon. Its
+[release workflow](https://github.com/gunasekar/ptyrig/actions/runs/41511397899)
 passed the build and verification lanes and published through Marketplace OIDC.
-The downloaded Marketplace VSIX matched the tested artifact's SHA-256 checksum.
+The Marketplace VSIX matched the tested artifact after HTTP gzip decoding.
 
-v0.3.0 Preview introduces standard terminal title support. The
-breaking migrations are `($CMD)` → `($TITLE)` and custom OSC 777 → standard OSC
-0/2. See CHANGELOG.md and USAGE.md. After review and merge, publish the tagged
-`v0.3.0` artifact using the commands below. Check the
-[GitHub releases](https://github.com/gunasekar/ptyrig/releases) and the
+The commands below target v0.3.1 Preview, a compatible fix that recognizes `$TITLE`
+directly and preserves literal dollar text in application titles. Existing
+`($TITLE)` templates retain their parentheses. See CHANGELOG.md and USAGE.md.
+Check the [GitHub releases](https://github.com/gunasekar/ptyrig/releases) and the
 [Marketplace listing](https://marketplace.visualstudio.com/items?itemName=ptyrig.ptyrig)
 for publication status.
 
@@ -65,7 +64,7 @@ npm run test:vscode
 PTYRIG_VSCODE_VERSION=1.95.3 npm run test:vscode:ci
 npm run release:check
 npm run package
-python3 scripts/verify-package.py ptyrig-0.3.0-darwin-arm64.vsix --target darwin-arm64
+python3 scripts/verify-package.py ptyrig-0.3.1-darwin-arm64.vsix --target darwin-arm64
 ```
 
 Packaging targets the build host and writes the VSIX, its SHA-256 file, and a
@@ -80,7 +79,7 @@ After all setup and checks pass, create the reviewed version tag and push it.
 Publishing is manual; a tag push alone does not publish:
 
 ```sh
-gh workflow run publish.yml --ref v0.3.0 -f tag=v0.3.0
+gh workflow run publish.yml --ref v0.3.1 -f tag=v0.3.1
 ```
 
 The workflow verifies the tag/version, requires that its dispatch source commit
