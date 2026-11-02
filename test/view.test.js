@@ -67,7 +67,7 @@ test('webview has no workspace resource access, command URIs or external script 
 });
 
 
-test('command labels update only their own tab and stop updating after hide',()=>{
+test('live titles update only their own tab and stop updating after hide',()=>{
   const {panel,session}=setup();
   session.emit('title','1: Agent (codex)');
   assert.equal(panel.title,'1: Agent (codex)');

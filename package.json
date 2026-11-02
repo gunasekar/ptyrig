@@ -2,7 +2,7 @@
   "name": "ptyrig",
   "displayName": "PTYrig",
   "description": "Give your CLI/TUI tool a dedicated place in VS Code with a few settings.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "license": "MIT",
   "engines": {
@@ -103,13 +103,13 @@
         "ptyrig.name": {
           "type": "string",
           "default": "PTYrig",
-          "description": "Display name used in the status bar and launcher tooltip. Plain text; session title placeholders do not apply.",
+          "description": "Display name used in the status bar, launcher tooltip and initial tab title for ($TITLE) templates. Plain text; session title placeholders do not apply.",
           "scope": "resource"
         },
         "ptyrig.sessionTitle": {
           "type": "string",
           "default": "PTYrig",
-          "description": "Session title template. Use ($CMD) for the launched command, e.g. Agent ($CMD). Parentheses are preserved; multiple-session titles have a numeric prefix.",
+          "description": "Session title template. Use ($TITLE) for the live terminal title (OSC 0/2), e.g. Agent ($TITLE). For ($TITLE) templates, shows ptyrig.name until a nonempty title arrives. Fixed templates ignore updates. Parentheses are preserved; multiple-session titles have a numeric prefix.",
           "scope": "resource"
         },
         "ptyrig.multipleSessions": {

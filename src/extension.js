@@ -73,7 +73,7 @@ function activate(context) {
       return;
     }
     const name = (config.get('sessionTitle', 'PTYrig').replace(/[\x00-\x1f\x7f]/g, '').trim() || 'PTYrig').slice(0, 120);
-    const session = new Session(nextId++, name, command, folder?.uri.fsPath || require('node:os').homedir(), vscode.version, multipleSessions);
+    const session = new Session(nextId++, name, command, folder?.uri.fsPath || require('node:os').homedir(), vscode.version, multipleSessions, config.get('name', 'PTYrig'));
     sessions.set(session.id, session);
     current = session.id;
     session.once('exit', () => {

@@ -11,7 +11,7 @@ if (!/^[a-z0-9][a-z0-9-]*$/i.test(manifest.publisher || '') || /undefined|exampl
 const repo = manifest.repository?.url;
 if (!/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\.git)?$/.test(repo || '')) failures.push('Set the canonical GitHub repository URL.');
 if (!manifest.homepage || !manifest.bugs?.url) failures.push('Set the public homepage and issue tracker URLs.');
-if (manifest.preview !== true) failures.push('v0.1.0 should be labeled Preview.');
+if (manifest.preview !== true) failures.push('The public release should be labeled Preview.');
 if (manifest.capabilities?.untrustedWorkspaces?.supported !== false) failures.push('Workspace Trust must be required.');
 if (!manifest.contributes.configuration.properties['ptyrig.command'].restricted) failures.push('The command setting must remain restricted.');
 for (const [name, version] of Object.entries({...manifest.dependencies,...manifest.devDependencies})) {

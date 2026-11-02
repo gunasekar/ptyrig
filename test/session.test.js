@@ -76,6 +76,7 @@ test('PTY environment identifies VS Code and discards inherited terminal identit
   assert.equal(env.TERM_PROGRAM_VERSION, '1.95.0');
   assert.equal(env.TERM, 'xterm-256color');
   assert.equal(env.COLORTERM, 'truecolor');
+  assert.equal(env.PTYRIG_SESSION, '1');
   for (const key of ['TMUX', 'TMUX_PANE', 'NVIM', 'ZED_TERM', 'ITERM_SESSION_ID', 'TERM_SESSION_ID']) assert.equal(key in env, false);
   assert.equal(env.SSH_AUTH_SOCK, '/agent');
   assert.equal(env.TRAILS_ATTACH, 'workspace'); // Explicit application overrides remain intact.
@@ -107,24 +108,22 @@ test('close escalates for a process ignoring hangup and terminates its PTY group
   } finally { session.close(true); }
 });
 
-test('reported picker selection updates only placeholder titles and survives hidden output', async () => {
-  const session = new Session(5, 'Agent ($CMD)', 'sleep 120', process.cwd());
+test('standard titles update placeholder tabs using OSC 0/2, including split and empty titles', async () => {
+  const session = new Session(5, 'Agent ($TITLE)', 'sleep 120', process.cwd(), undefined, true, 'Trails');
   const output = data => new Promise(resolve => session.screen.write(data, resolve));
   try {
-    assert.equal(session.title,'5: Agent (sleep)');
-    await output('\x1b]777;ptyrig-com');
-    await output('mand;codex\x07');
-    assert.equal(session.title,'5: Agent (codex)');
-    await output('\x1b]2;arbitrary application task\x07');
-    assert.equal(session.title,'5: Agent (codex)');
-    await output('\x1b]777;ptyrig-command;claude --resume\x07');
-    assert.equal(session.title,'5: Agent (codex)');
-    await output('\x1b]777;ptyrig-command;claude\x1b\\');
-    assert.equal(session.title,'5: Agent (claude)');
+    assert.equal(session.title,'5: Trails');
+    await output('\x1b]2;Fixing ');
+    await output('login bug\x07');
+    assert.equal(session.title,'5: Agent (Fixing login bug)');
+    await output('\x1b]0;Running tests\x1b\\');
+    assert.equal(session.title,'5: Agent (Running tests)');
+    await output('\x1b]2;\x07');
+    assert.equal(session.title,'5: Trails');
   } finally { session.close(); }
   const fixed = new Session(6, 'Fixed', 'sleep 120', process.cwd(),undefined,false);
   try {
-    await new Promise(resolve=>fixed.screen.write('\x1b]777;ptyrig-command;codex\x07',resolve));
+    await new Promise(resolve=>fixed.screen.write('\x1b]2;Some title\x07',resolve));
     assert.equal(fixed.title,'Fixed');
   } finally { fixed.close(); }
 });

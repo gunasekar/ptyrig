@@ -3,7 +3,7 @@ const { Terminal } = require('@xterm/headless');
 const { SerializeAddon } = require('@xterm/addon-serialize');
 const pty = require('node-pty');
 const { capture } = require('../web/state');
-const { directCommand, commandLabel, sessionTitle } = require('./titles');
+const { sessionTitle } = require('./titles');
 
 function launch(command, env = process.env, platform = process.platform) {
   const shell = platform === 'win32' ? env.ComSpec || 'cmd.exe' : env.SHELL || '/bin/sh';
@@ -14,7 +14,8 @@ function launch(command, env = process.env, platform = process.platform) {
 }
 
 function terminalEnvironment(parent = process.env, vscodeVersion) {
-  const env = { ...parent, TERM: 'xterm-256color', COLORTERM: 'truecolor', TERM_PROGRAM: 'vscode' };
+  // Informational identification for optional integrations; OSC titles need no marker.
+  const env = { ...parent, TERM: 'xterm-256color', COLORTERM: 'truecolor', TERM_PROGRAM: 'vscode', PTYRIG_SESSION: '1' };
   // The extension host may inherit the terminal that launched VS Code. This
   // process has its own PTY, so it is not inside that tmux pane or editor.
   for (const key of ['TMUX', 'TMUX_PANE', 'NVIM', 'ZED_TERM', 'ITERM_SESSION_ID', 'TERM_SESSION_ID']) delete env[key];
@@ -24,26 +25,20 @@ function terminalEnvironment(parent = process.env, vscodeVersion) {
 }
 
 class Session extends EventEmitter {
-  constructor(id, name, command, cwd, vscodeVersion, numbered = true) {
+  constructor(id, name, command, cwd, vscodeVersion, numbered = true, displayName = 'PTYrig') {
     super();
     this.id = id;
     this.nameTemplate = name;
     this.numbered = numbered;
-    this.commandName = directCommand(command);
-    this.title = sessionTitle(id, name, this.commandName, numbered);
+    this.title = sessionTitle(id, name, '', numbered, displayName);
     this.closed = false;
     this.closing = false;
     this.screen = new Terminal({ cols: 100, rows: 30, scrollback: 2000, allowProposedApi: true });
-    this.screen.parser.registerOscHandler(777, data => {
-      const prefix = 'ptyrig-command;';
-      if (!data.startsWith(prefix)) return false;
-      const command = commandLabel(data.slice(prefix.length));
-      if (command && this.nameTemplate.includes('($CMD)') && !this.closed) {
-        this.commandName = command;
-        const title = sessionTitle(this.id, this.nameTemplate, command, this.numbered);
-        if (title !== this.title) { this.title = title; this.emit('title', title); }
-      }
-      return true;
+    // xterm handles OSC 0/2 and BEL/ST terminators even without a visible renderer.
+    this.screen.onTitleChange(value => {
+      if (this.closed || !this.nameTemplate.includes('($TITLE)')) return;
+      const title = sessionTitle(this.id, this.nameTemplate, value, this.numbered, displayName);
+      if (title !== this.title) { this.title = title; this.emit('title', title); }
     });
     // The serialize addon restores tracking mode but omits mouse encoding.
     // Preserve SGR/pixel encoding explicitly so restored views send the protocol

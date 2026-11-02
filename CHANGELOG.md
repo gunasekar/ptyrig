@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 Preview (2026-11-03)
+
+- Replace `($CMD)` and custom OSC 777 command reports with live `($TITLE)` substitution from standard OSC 0/2 terminal titles. **Migration:** update title templates and launcher escape sequences; old placeholders remain literal text.
+- Show `ptyrig.name` until a nonempty terminal title arrives; restore it on an empty title. Fixed templates remain fixed.
+- Shorten live title values to 32 Unicode code points with an ellipsis, including native tab hover text.
+- Set the informational `PTYRIG_SESSION=1` environment marker for optional integrations.
+- Update the agent picker example and document Trails/tmux title forwarding.
+
 ## 0.2.0 Preview (2026-11-02)
 
 - Add a right-aligned status bar launcher that appears after startup without launching a process.
