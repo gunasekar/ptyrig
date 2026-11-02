@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 Preview (2026-11-02)
+
+- Add a right-aligned status bar launcher that appears after startup without launching a process.
+- Use `ptyrig.name` for the launcher display name and tooltip; add `ptyrig.sessionTitle` for session tab title templates. **Migration:** move existing session titles from `ptyrig.name` to `ptyrig.sessionTitle`, then set a plain display name in `ptyrig.name`.
+- Refresh the logo with a transparent orange listing/tab icon and a theme-aware status bar glyph.
+- Fix terminal sizing so padding does not clip the rightmost columns or bottom rows.
+- Add real VS Code screenshots and configuration examples for Claude, Codex, OpenCode, Cursor, and LazyGit.
+
 ## 0.1.1 Preview (2026-11-02)
 
 - Outline the Marketplace listing icon so it stays visible on dark themes.

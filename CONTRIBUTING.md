@@ -17,7 +17,7 @@ npm audit --omit=dev
 npm run test:vscode       # existing VS Code installation, isolated profile
 npm run test:vscode:ci    # download an official VS Code build, isolated profile
 npm run package
-python3 scripts/verify-package.py ptyrig-0.1.1-darwin-arm64.vsix --target darwin-arm64
+python3 scripts/verify-package.py ptyrig-0.2.0-darwin-arm64.vsix --target darwin-arm64
 ```
 
 Substitute the build host's target/version in the verification command. Linux

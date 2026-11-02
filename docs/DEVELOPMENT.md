@@ -9,7 +9,7 @@ installation.
 ```sh
 npm ci
 npm run package
-code --install-extension ptyrig-0.1.1-darwin-arm64.vsix
+code --install-extension ptyrig-0.2.0-darwin-arm64.vsix
 ```
 
 Builds target the host OS and architecture. The public preview supports macOS
@@ -40,6 +40,27 @@ npm run package
 
 The VSIX targets the build host OS/architecture and includes a SHA-256 checksum
 and CycloneDX runtime dependency inventory. For example, a macOS Apple Silicon
-build produces `ptyrig-0.1.1-darwin-arm64.vsix`.
+build produces `ptyrig-0.2.0-darwin-arm64.vsix`.
 
 See [Contributing](../CONTRIBUTING.md) for the full check list and contribution guidance.
+
+## Logo assets
+
+`icons/ptyrig.svg` is the canonical transparent orange logo. Session tabs use it
+directly. The listing PNG and monochrome status bar font are checked in, so
+normal builds and extension users need no image or font tooling.
+
+To regenerate after changing the SVG, install librsvg (`rsvg-convert`) and use
+a disposable Python environment for the font build tools:
+
+```sh
+python3 -m venv /tmp/ptyrig-icon-tools
+/tmp/ptyrig-icon-tools/bin/pip install fonttools==4.68.0 skia-pathops==0.9.2
+python3 scripts/build-icon.py
+/tmp/ptyrig-icon-tools/bin/python scripts/build-status-icon.py
+```
+
+README screenshots are real isolated VS Code captures. Keep the visible settings
+identical to the corresponding JSON examples, use the current logo, and capture
+only the demo window. README image URLs are absolute raw GitHub URLs so vsce
+preserves the document bytes during packaging and Marketplace can load them.

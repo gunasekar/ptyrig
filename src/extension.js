@@ -12,6 +12,10 @@ function activate(context) {
   let stopping = false;
 
   const liveSessions = () => [...sessions.values()].filter(session => !session.closed && !session.closing);
+  const workspaceFolder = () => {
+    const uri = vscode.window.activeTextEditor?.document.uri;
+    return (uri && vscode.workspace.getWorkspaceFolder(uri)) || vscode.workspace.workspaceFolders?.[0];
+  };
 
   function revealViews() {
     const selected = views.get(current);
@@ -47,8 +51,7 @@ function activate(context) {
     views.get(selected.id)?.reveal();
   }
   async function newSession() {
-    const uri = vscode.window.activeTextEditor?.document.uri;
-    const folder = (uri && vscode.workspace.getWorkspaceFolder(uri)) || vscode.workspace.workspaceFolders?.[0];
+    const folder = workspaceFolder();
     const config = vscode.workspace.getConfiguration('ptyrig', folder?.uri);
     const multipleSessions = config.get('multipleSessions', true);
     if (!multipleSessions && liveSessions().length) {
@@ -69,7 +72,7 @@ function activate(context) {
       });
       return;
     }
-    const name = (config.get('name', 'PTYrig').replace(/[\x00-\x1f\x7f]/g, '').trim() || 'PTYrig').slice(0, 120);
+    const name = (config.get('sessionTitle', 'PTYrig').replace(/[\x00-\x1f\x7f]/g, '').trim() || 'PTYrig').slice(0, 120);
     const session = new Session(nextId++, name, command, folder?.uri.fsPath || require('node:os').homedir(), vscode.version, multipleSessions);
     sessions.set(session.id, session);
     current = session.id;
@@ -92,7 +95,22 @@ function activate(context) {
     });
     return pending;
   }
+  const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  function updateStatusLabel() {
+    const name = (vscode.workspace.getConfiguration('ptyrig', workspaceFolder()?.uri).get('name', 'PTYrig').replace(/[\x00-\x1f\x7f]/g, '').trim() || 'PTYrig').slice(0, 120);
+    status.text = `$(ptyrig-logo) ${name.replace(/\$\(/g, '\\$(')}`;
+    status.name = name;
+    status.tooltip = `Hide/Show ${name}`;
+  }
+  updateStatusLabel();
+  status.command = 'ptyrig.toggle';
+  status.show();
   context.subscriptions.push(
+    status,
+    vscode.window.onDidChangeActiveTextEditor(updateStatusLabel),
+    vscode.workspace.onDidChangeConfiguration(event => {
+      if (event.affectsConfiguration('ptyrig.name')) updateStatusLabel();
+    }),
     vscode.commands.registerCommand('ptyrig.new', () => run(newSession)),
     vscode.commands.registerCommand('ptyrig.toggle', () => run(async () => {
       if ([...views.values()].some(panel => panel.visible)) {
