@@ -1,16 +1,19 @@
 # Release preparation
 
-## Current status
+## Release target
 
 v0.2.0 Preview is published for macOS Apple Silicon. Its
 [release workflow](https://github.com/gunasekar/ptyrig/actions/runs/41415660479)
 passed the build and verification lanes and published through Marketplace OIDC.
 The downloaded Marketplace VSIX matched the tested artifact's SHA-256 checksum.
 
-v0.3.0 Preview is prepared locally with standard terminal title support. The
+v0.3.0 Preview introduces standard terminal title support. The
 breaking migrations are `($CMD)` → `($TITLE)` and custom OSC 777 → standard OSC
 0/2. See CHANGELOG.md and USAGE.md. After review and merge, publish the tagged
-`v0.3.0` artifact using the commands below; this version has not been published.
+`v0.3.0` artifact using the commands below. Check the
+[GitHub releases](https://github.com/gunasekar/ptyrig/releases) and the
+[Marketplace listing](https://marketplace.visualstudio.com/items?itemName=ptyrig.ptyrig)
+for publication status.
 
 The source is public at `gunasekar/ptyrig`, with private vulnerability reporting,
 main branch protection and protected version tags. The Marketplace publisher is
@@ -89,7 +92,7 @@ the extension with publishing credentials. Actions are pinned to commit SHAs.
 
 The publisher job needs `id-token:write` for OIDC and attestation, plus attestation
 and artifact-metadata permissions. Its dependency installation skips install scripts.
-These are prepared controls, not verified remote configuration. Never describe the
+These controls were exercised by the v0.2.0 publication. Never describe the
 release as signed or provenance-verified until the hosted job and distribution have
 actually been checked.
 
