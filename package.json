@@ -138,7 +138,7 @@
   },
   "devDependencies": {
     "@vscode/test-electron": "3.1.0",
-    "@vscode/vsce": "4.1.0"
+    "@vscode/vsce": "4.1.1"
   },
   "allowScripts": {
     "node-pty@1.1.0": true,
